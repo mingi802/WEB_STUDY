@@ -1,3 +1,10 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+            
+<%@page import="java.sql.DriverManager"%>
+<%@page import="java.sql.Connection"%>
+<%@page import="java.sql.PreparedStatement"%>
+<%@page import="java.sql.ResultSet"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -15,7 +22,7 @@
 	</header>
 		<nav>
 			<div class = "head">
-				<span>
+				<span class = "head">
 					<a href="https://github.com/mingi802/WEB_STUDY" target="_blank">GitHub</a>
 					<a href="index.html" target="_blank">연습한 흔적</a>
 				</span>
@@ -72,14 +79,55 @@
 			
 			<aside>
 				<p><b>방명록</b></p>
+				<%
+
+					Connection conn = null;
+			
+					String url = "jdbc:mysql://localhost:3306/intro";
+					String id = "root";                     //MySQL에 접속을 위한 계정의 ID
+					String pwd = "1234";            //MySQL에 접속을 위한 계정의 암호
+					Class.forName("com.mysql.cj.jdbc.Driver");
+					conn = DriverManager.getConnection(url, id, pwd);
+			
+				%>
+				<div class="guestbooktable">
+				<table border = "1">
+				<%
+					PreparedStatement pstmt = null;
+					ResultSet rs = null;
+					String sql = "SELECT * FROM guestbook";
+					pstmt = conn.prepareStatement(sql);
 				
+					// 4) 실행
+					rs = pstmt.executeQuery();
+				
+					// 5) 결과를 테이블에 출력
+					while (rs.next()) {
+						String name = rs.getString("name");
+						String date = rs.getString("date");
+						String comment = rs.getString("comment");	
+				%>
+						<tr>
+							<th><span style="float: left; text-align:left; font-size: 14px;"><%=name%>&emsp;</span><span class="date"><%=date%></span></th>
+						</tr>
+						<tr>
+							<td style="text-align:left; font-size: 12px; word-break:break-all;"><%=comment%></td>
+						</tr>
+				<%
+					}
+					pstmt.close();
+					rs.close();
+					conn.close();
+				%>
+				</table>
+				</div>
 				<form action="./guestbook.jsp">
 					<fieldset>
 						<legend><i>방명록 남기기</i></legend>
 						<input style="float:right; margin-right: 4px;" type="text" name="name" placeholder="이름"></input>
 						<textarea name="comment" placeholder="댓글"></textarea>
-						<input style="float:right;" type="reset" name="res" placeholder="초기화"></input>
-						<input style="float:right; margin-right: 5px;"type="submit" name="sub" placeholder="등록"></input>
+						<input style="float:right;" type="reset" name="res" value="초기화"></input>
+						<input style="float:right; margin-right: 5px;"type="submit" name="sub" value="등록"></input>
 					</fieldset>
 				</form>
 			</aside>
