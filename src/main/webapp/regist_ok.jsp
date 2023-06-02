@@ -44,11 +44,17 @@ String emailsts = request.getParameter("emailsts");
 <p>Your DetailAddr: <%=detailAddr %></p>
 <input type="button" value="SIGN UP" Onclick="signUp()">
 <input type="button" value="GO BACK" Onclick="goBack()">
+<input type="button" id="goLogin" value="GO TO LOGIN" Onclick="goLogin()" disabled>
 </body> 
 <script>
 	function goBack() {
 		window.history.back();
 	}
+	
+	function goLogin() {
+		window.location.href="./login.jsp";
+	}
+	
 	console.log("<%=smssts %>"+" "+"<%=emailsts %>");
 	
 	function signUp() { 
@@ -66,7 +72,7 @@ String emailsts = request.getParameter("emailsts");
 		}
 		
 		PreparedStatement pstmt = null;
-		String sql = "INSERT INTO T_SHOPPING_MEMBER VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL)";
+		String sql = "INSERT INTO T_SHOPPING_MEMBER (MEMBER_ID, MEMBER_PW, MEMBER_NAME, MEMBER_GENDER, TEL1, TEL2, TEL3, SMSSTS_YN, EMAIL1, EMAIL2, EMAILSTS_YN, POSTCODE, ROADADDRESS, JIBUNADDRESS, DETAILADDRESS, MEMBER_BIRTH_Y, MEMBER_BIRTH_M, MEMBER_BIRTH_D, MEMBER_BIRTH_GN, RRN_FRONT, RRN_BACK) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			
 		String tel1 = phone_number.split("-")[0];
 		String tel2 = phone_number.split("-")[1];
@@ -76,6 +82,8 @@ String emailsts = request.getParameter("emailsts");
 		String birth_y = birth_date.split("/")[0];
 		String birth_m = birth_date.split("/")[1];
 		String birth_d = birth_date.split("/")[2];
+		String rrn1 = rrn.split("-")[0];
+		String rrn2 = rrn.split("-")[1];
 		
 		pstmt = conn.prepareStatement(sql);
 		pstmt.setString(1, id);
@@ -97,6 +105,8 @@ String emailsts = request.getParameter("emailsts");
 		pstmt.setString(17, birth_m);
 		pstmt.setString(18, birth_d);
 		pstmt.setString(19, calendar);
+		pstmt.setString(20, rrn1);
+		pstmt.setString(21, rrn2);
 		%>
 		console.log("<%=pstmt %>");
 		<%
@@ -109,6 +119,8 @@ String emailsts = request.getParameter("emailsts");
 		else {
 		%>	
 			console.log("Insert Successed");
+			alert("회원 가입 성공");
+			document.getElementById("goLogin").disabled=false;
 		<%
 			pstmt.close();
 		}

@@ -7,7 +7,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="css/loginform.css">
+<link rel="stylesheet" href="css/SignUpForm.css">
 <script  src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
@@ -103,109 +103,108 @@
 	    	rrn_2.disabled=false;
 		}
 	
-	    function validateForm() {
-	    	var id = document.loginform.id.value;
-	    	var password = document.loginform.password.value;
-	    	var confirm_password = document.loginform.confirm_password.value;
-	    	var name = document.loginform.name.value;
-	    	var phone_number = document.loginform.phone1.value +"-"+ document.loginform.phone2.value +"-"+ document.loginform.phone3.value;
-	    	var email = document.loginform.mail1.value +"@"+ document.loginform.mail2.value; 
-	    	var gender = document.loginform.gender.value;
-	    	var rrn_gen = (gender == "male") ? [1,3] : [2,4];
-	    	var birth_date = document.loginform.year.value+"년 "+document.loginform.month.value+"월 "+document.loginform.day.value+"일";
-	    	var rrn = document.loginform.rrn.value + "-" + document.loginform.rrn_2.value; 
-	    	var postcode = document.loginform.postcode.value;
+	function validateForm() {
+	    var id = document.loginform.id.value;
+	    var password = document.loginform.password.value;
+	    var confirm_password = document.loginform.confirm_password.value;
+	    var name = document.loginform.name.value;
+	    var phone_number = document.loginform.phone1.value +"-"+ document.loginform.phone2.value +"-"+ document.loginform.phone3.value;
+	   	var email = document.loginform.mail1.value +"@"+ document.loginform.mail2.value; 
+	   	var gender = document.loginform.gender.value;
+	   	var rrn_gen = (gender == "male") ? [1,3] : [2,4];
+	   	var birth_date = document.loginform.year.value+"년 "+document.loginform.month.value+"월 "+document.loginform.day.value+"일";
+	   	var rrn = document.loginform.rrn.value + "-" + document.loginform.rrn_2.value; 
+	   	var postcode = document.loginform.postcode.value;
+    	
+	    var smssts_is_checked = document.getElementById("smssts").checked;
+	    var emailsts_is_checked = document.getElementById("emailsts").checked;
 	    	
-	    	var smssts_is_checked = document.getElementById("smssts").checked;
-	    	var emailsts_is_checked = document.getElementById("emailsts").checked;
+	    if(emailsts_is_checked) {
+	    	document.getElementById("hidden-emailsts").disabled=true;
+	    }
+	    if(smssts_is_checked) {
+	    	document.getElementById("hidden-smssts").disabled=true;
+	    }
 	    	
-	    	if(emailsts_is_checked) {
-	    		document.getElementById("hidden-emailsts").disabled=true;
-	    	}
-	    	if(smssts_is_checked) {
-	    		document.getElementById("hidden-smssts").disabled=true;
-	    	}
-	    		
+	    alert(id+" "+password+" "+name+" "+phone_number+" "+email+" "+gender+" "+birth_date+" "+rrn+" "+rrn_gen+" "+postcode);
 	    	
+	    if(document.loginform.id.disabled) {
+	    	console.log("고유한 아이디");
+	    }
+	    else {
+	    	alert("아이디 중복 확인 필수");
+	    	document.loginform.id.focus();
+	    	return false;
+	    }
+	    //이 문서의 charset이 utf-8이 아니면 힣이 깨지므로 주의하자.
+	    if((/^(?=.*[^ㄱ-ㅎ가-힣A-Za-z0-9])(?=.*[0-9])(?=.*[a-zA-Z]).{5,8}$/).test(id) // <- 이 정규표현식은 한글,영어,숫자를 제외한 문자(특수문자)와 숫자, 영어가 문자열에 있는 지, 길이는 5~8이 맞는 지 검사해준다.  
+	   			&& id.match(/[^ㄱ-ㅎ가-힝A-Za-z0-9]/g).length == 1) {	// <- match()는 괄호안에 정규표현식이 문자열 내부에 존재하면 그 값을 배열로 하나만 가져오는데, 표현식 끝에 g(global)을 달아주면 문자열 끝까지 검사하여 조건이 일치하는 값을 전부 가져온다. 
+	    															// 괄호 안 표현식은 특수문자를 추출해낸다. 즉, 저 배열의 길이가 1이 넘으면 id안에 특수문자가 2개 이상 있다는 뜻이므로 올바른 아이디 형식이 아님을 검사할 수 있다. 
+	    	console.log("아이디 형식 통과");	
+	    } else {
+	    	alert("올바르지 않은 아이디 형식(영어,숫자,특수문자1개로 구성된 5~8자리의 문자열)");
+	    	 document.loginform.id.focus();
+	    	 return false;
+	    }
 	    	
-	    	alert(id+" "+password+" "+name+" "+phone_number+" "+email+" "+gender+" "+birth_date+" "+rrn+" "+rrn_gen+" "+postcode);
+	    if((/^(?=.*[^ㄱ-ㅎ가-힣A-Za-z0-9])(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$/).test(password)) {
+	    	console.log("비밀번호 형식 통과");
+    	} else {
+    		alert("올바르지 않은 비밀번호 형식(영어,숫자,특수문자로 구성된 8자리 이상의 문자열)");
+    		document.loginform.password.focus();
+    		return false;
+    	}
+	
+	    if(password==confirm_password) {
+	    	console.log("비밀번호 일치"); 		   		    			
+    	} else { 
+    		alert("비밀번호 맞지 않음");
+    		document.loginform.confirm_password.focus();
+    		return false;
+    	}	
 	    	
-	    	if(document.loginform.id.disabled) {
-	    		alert("고유한 아이디");
-	    	}
-	    	else {
-	    		alert("아이디 중복 확인 필수");
-	    		document.loginform.id.focus();
-	    		return false;
-	    	}
-	    	//이 문서의 charset이 utf-8이 아니면 힣이 깨지므로 주의하자.
-	    	if((/^(?=.*[^ㄱ-ㅎ가-힣A-Za-z0-9])(?=.*[0-9])(?=.*[a-zA-Z]).{5,8}$/).test(id) // <- 이 정규표현식은 한글,영어,숫자를 제외한 문자(특수문자)와 숫자, 영어가 문자열에 있는 지, 길이는 5~8이 맞는 지 검사해준다.  
-	    			&& id.match(/[^ㄱ-ㅎ가-힝A-Za-z0-9]/g).length == 1) {	// <- match()는 괄호안에 정규표현식이 문자열 내부에 존재하면 그 값을 배열로 하나만 가져오는데, 표현식 끝에 g(global)을 달아주면 문자열 끝까지 검사하여 조건이 일치하는 값을 전부 가져온다. 
-	    																// 괄호 안 표현식은 특수문자를 추출해낸다. 즉, 저 배열의 길이가 1이 넘으면 id안에 특수문자가 2개 이상 있다는 뜻이므로 올바른 아이디 형식이 아님을 검사할 수 있다. 
-	    		alert("아이디 형식 통과");	
-	    	} else {
-	    		alert("올바르지 않은 아이디 형식(영어,숫자,특수문자1개로 구성된 5~8자리의 문자열)");
-	    		 document.loginform.id.focus();
-	    		 return false;
-	    	}
+	    if(name!="") {	    	
+	    	console.log("이름 형식 통과");	
+		} else {
+			alert("이름 입력 필수");
+			document.loginform.name.focus();
+			return false;
+		}
 	    	
-	    	if((/^(?=.*[^ㄱ-ㅎ가-힣A-Za-z0-9])(?=.*[0-9])(?=.*[a-zA-Z]).{8,}$/).test(password)) {
-    			alert("비밀번호 형식 통과");
-    		} else {
-    			alert("올바르지 않은 비밀번호 형식(영어,숫자,특수문자로 구성된 8자리 이상의 문자열)");
-    			document.loginform.password.focus();
-    			return false;
-    		}
-	    	
-	    	if(password==confirm_password) {
-    			alert("비밀번호 일치"); 		   		    			
-    		} else { 
-    			alert("비밀번호 맞지 않음");
-    			document.loginform.confirm_password.focus();
-    			return false;
-    		}	
-	    	
-	    	if(name!="") {	    	
-	    		alert("이름 형식 통과");	
-			} else {
-				alert("이름 입력 필수");
-				document.loginform.name.focus();
-				return false;
-			}
-	    	
-			if(phone_number.length == 13) {
-				alert("전화번호 형식 통과");				
-			} else {
-				alert("전화번호 입력 필수");
-				document.loginform.phone2.focus();
-				return false;
-			}	
+		if(phone_number.length == 13) {
+			console.log("전화번호 형식 통과");				
+		} else {
+			alert("전화번호 입력 필수");
+			document.loginform.phone2.focus();
+			return false;
+		}	
 			
-			if(email.length > 9 && document.loginform.mail2.value != "" && document.loginform.mail2.value.includes(".")) {
-				alert("이메일 형식 통과");			
-			} else {
-				alert("이메일 입력 필수");
-				document.loginform.mail1.focus();
-				return false;
-			}		    
+		if(email.length > 9 && document.loginform.mail2.value != "" && document.loginform.mail2.value.includes(".")) {
+			console.log("이메일 형식 통과");			
+		} else {
+			alert("이메일 입력 필수");
+			document.loginform.mail1.focus();
+			return false;
+		}		    
 			
-			if(rrn.length == 14 && rrn_gen.includes(parseInt(rrn.charAt(7)))) {
-				alert("선택한 성별과 주민등록번호에 기재된 성별이 동일함");
-			} else {
-				alert("선택한 성별과 주민등록번호에 기재된 성별 틀림 또는 잘못된 주민번호 길이");
-				document.loginform.rrn.focus();
-				return false;
-			}		   
+		if(rrn.length == 14 && rrn_gen.includes(parseInt(rrn.charAt(7)))) {
+			console.log("선택한 성별과 주민등록번호에 기재된 성별이 동일함");
+		} else {
+			alert("선택한 성별과 주민등록번호에 기재된 성별 틀림 또는 잘못된 주민번호 길이");
+			document.loginform.rrn.focus();
+			return false;
+		}		   
 			
-			if(postcode.length == 5) {
-				alert("우편번호 형식 통과");
-				return true;
-			} else {
-				alert("우편번호 선택 필수");
-				document.loginform.postcode.focus();
-				return false;
-			}	
-	   	}
+		if(postcode.length == 5) {
+			console.log("우편번호 형식 통과");
+			document.loginform.id.disabled = false;
+			return true;
+		} else {
+			alert("우편번호 선택 필수");
+			document.loginform.postcode.focus();
+			return false;
+		}	
+	}
 	    
 	    window.onload = function(){
 	    	setDateSelectBox();
@@ -406,6 +405,5 @@
 			</tr>
 		</table>
 	</form>
-
 </body>
 </html>
